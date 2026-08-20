@@ -1,0 +1,25 @@
+# Environment and secrets
+.env
+.env.*
+.env.local
+
+# Dependencies
+node_modules/
+deno.lock
+
+# Stale Netlify build artifacts (project no longer uses Netlify)
+.netlify/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
