@@ -133,7 +133,6 @@ Available on every page with 7 one-click analyses + free-text chat:
 - Filter by time (Overdue, Next 30 Days, Next 90 Days) or by type (Insurance, Loan, FD, RD, SIP, Custom)
 
 **Repository:** [https://github.com/ShubhiGoel5/Algo-Tracking-Bot](https://github.com/ShubhiGoel5/Algo-Tracking-Bot)  
-**Original Author:** Balaji (`balajiregt`)  
 **Maintainer:** Shubhi Goel (`ShubhiGoel5`)  
 **License:** [MIT License](LICENSE)
 

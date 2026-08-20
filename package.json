@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Self-hostable personal portfolio tracker for Indian investors",
   "private": true,
-  "author": "Shubhi Goel (Original Author: balajiregt)",
+  "author": "Shubhi Goel",
   "license": "MIT",
   "repository": {
     "type": "git",

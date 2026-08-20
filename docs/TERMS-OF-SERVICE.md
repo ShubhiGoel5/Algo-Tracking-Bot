@@ -134,4 +134,3 @@ These terms shall be governed by and construed in accordance with the laws of In
 For questions about these terms or project attribution:
 - Repository: [https://github.com/ShubhiGoel5/Algo-Tracking-Bot](https://github.com/ShubhiGoel5/Algo-Tracking-Bot)
 - Maintainer: **Shubhi Goel** (`ShubhiGoel5`)
-- Original Author: **Balaji** (`balajiregt`)
