@@ -32,7 +32,7 @@ Track Stocks, Mutual Funds, FDs, RDs, SGB Gold, Physical Gold, Post Office schem
 │                                      │
 │             Browser                  │
 │                                      │
-│           RupeeTracker App               │
+│           RupeeTracker App           │
 │         HTML + CSS + JS              │
 └───────────────┬──────────────────────┘
                 │
