@@ -1,0 +1,16 @@
+{
+  "name": "algo-tracking-bot",
+  "version": "1.0.0",
+  "description": "Self-hostable personal portfolio tracker for Indian investors",
+  "private": true,
+  "author": "Shubhi Goel (Original Author: balajiregt)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShubhiGoel5/Algo-Tracking-Bot.git"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  }
+}
