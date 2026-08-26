@@ -4168,7 +4168,22 @@ function saveFinnhubKey() {
   fetchLivePrice();
 }
 
+// Helper: call Finnhub via the server-side proxy (keeps API key off browser)
+async function callFinnhub(endpoint, params = {}) {
+  const res = await fetch('/api/finnhub', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ endpoint, params }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Finnhub proxy error (${res.status})`);
+  }
+  return res.json();
+}
+
 async function fetchLivePrice() {
+  // Key still read from localStorage for Settings UI display, but API calls go through server proxy
   const key = localStorage.getItem('mypf_finnhub_key');
   const btn = document.getElementById('ssFetchBtn');
   const src = document.getElementById('ssPriceSource');
@@ -4199,25 +4214,19 @@ async function fetchLivePrice() {
     }
   }
 
-  // Finnhub API (primary when AI off, fallback when AI fails)
-  if (!priceUsd && key) {
+  // Finnhub via server proxy (primary — API key stays on server)
+  if (!priceUsd) {
     try {
-      const [stockRes, fxRes] = await Promise.all([
-        fetch(`https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${key}`),
-        fetch(`https://finnhub.io/api/v1/forex/rates?base=USD&token=${key}`)
+      const [stock, fx] = await Promise.all([
+        callFinnhub('quote', { symbol: ticker }),
+        callFinnhub('forex/rates', { base: 'USD' }),
       ]);
-      if (stockRes.ok) {
-        const stock = await stockRes.json();
-        if (stock.c && stock.c > 0) {
-          priceUsd = stock.c;
-          changePct = stock.dp || 0;
-        }
+      if (stock.c && stock.c > 0) {
+        priceUsd = stock.c;
+        changePct = stock.dp || 0;
       }
-      if (fxRes.ok) {
-        const fx = await fxRes.json();
-        if (fx.quote?.INR) usdInr = fx.quote.INR;
-      }
-    } catch(e) { console.warn('Finnhub failed:', e.message); }
+      if (fx.quote?.INR) usdInr = fx.quote.INR;
+    } catch(e) { console.warn('Finnhub proxy failed:', e.message); }
   }
 
   if (priceUsd) {
@@ -4238,8 +4247,7 @@ async function fetchLivePrice() {
     updateSharesave();
   } else {
     if (src) src.textContent = '— fetch failed';
-    const msg = key ? 'APIs unavailable' : 'No Finnhub key and AI fallback unavailable';
-    alert('Could not fetch price: ' + msg + '\n\nYou can still type the price manually below.');
+    alert('Could not fetch price. Make sure FINNHUB_API_KEY is set in server env vars (Railway Variables or .env).\n\nYou can still type the price manually below.');
   }
   if (btn) { btn.textContent = '⟳ Fetch Live Price'; btn.disabled = false; }
 }
@@ -9823,7 +9831,8 @@ async function supaRequest(method, path, body) {
   if (!config?.url || !config?.key) throw new Error('Supabase not configured');
   // Use auth token if logged in, otherwise anon key
   const session = _supaSession || JSON.parse(localStorage.getItem('mypf_supa_session') || 'null');
-  const token = (session?.access_token && session.expires_at > Date.now()) ? session.access_token : config.key;
+  // expires_at from Supabase is Unix seconds; Date.now() is milliseconds — multiply by 1000
+  const token = (session?.access_token && session.expires_at * 1000 > Date.now()) ? session.access_token : config.key;
   const opts = {
     method,
     headers: {

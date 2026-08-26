@@ -1,4 +1,7 @@
 // server.js — Zero-dependency Node.js server for Railway deployment
+// Load .env file for local development (no-op in production if dotenv is absent)
+try { require('dotenv').config(); } catch(e) { /* dotenv not installed — use system env vars */ }
+
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -6,6 +9,7 @@ const path = require('path');
 const brokerAuth = require('./api/broker-auth.js');
 const brokerProxy = require('./api/broker-proxy.js');
 const aiProxy = require('./api/ai-proxy.js');
+const finnhubProxy = require('./api/finnhub-proxy.js');
 
 const PORT = process.env.PORT || 8080;
 
@@ -22,7 +26,7 @@ const SECURITY_HEADERS = {
     "script-src 'self' 'unsafe-inline' https://accounts.google.com https://cdnjs.cloudflare.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
     "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
-    "connect-src 'self' https://*.supabase.co https://api.mfapi.in https://api.gold-api.com https://finnhub.io https://gmail.googleapis.com https://cdn.jsdelivr.net https://query1.finance.yahoo.com https://overpass-api.de",
+    "connect-src 'self' https://*.supabase.co https://api.mfapi.in https://api.gold-api.com https://finnhub.io https://gmail.googleapis.com https://gmail.googleapis.com https://accounts.google.com https://cdn.jsdelivr.net https://query1.finance.yahoo.com https://overpass-api.de https://api.allorigins.win",
     "img-src 'self' data: https://*.tile.openstreetmap.org",
     "frame-src https://accounts.google.com",
   ].join('; '),
@@ -108,6 +112,9 @@ const server = http.createServer(async (req, res) => {
   }
   if (pathname === '/api/ai' || pathname === '/api/ai-proxy') {
     return handlerAdapter(aiProxy.handler, req, res);
+  }
+  if (pathname === '/api/finnhub') {
+    return handlerAdapter(finnhubProxy.handler, req, res);
   }
 
   // Only handle GET for static files

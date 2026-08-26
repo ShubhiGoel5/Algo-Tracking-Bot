@@ -168,7 +168,7 @@ exports.handler = async (event) => {
       const authUrl = urlBuilder(siteUrl + '/auth/callback');
       if (!authUrl) {
         return respond(event, 400, {
-          error: `API key not configured for ${broker}. Set via: fly secrets set.`,
+          error: `API key not configured for ${broker}. Add it via the Railway Variables dashboard (or your .env file for local dev).`,
           needs_env: true,
         });
       }
