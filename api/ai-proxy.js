@@ -115,7 +115,9 @@ exports.handler = async (event) => {
   }
 
   // Server-controlled AI model specification
-  const targetModel = process.env.AI_MODEL || 'openrouter/free';
+  // Default: google/gemini-2.0-flash-exp:free — a real free model on OpenRouter.
+  // Override with AI_MODEL env var. See https://openrouter.ai/models?order=pricing&supported_parameters=free
+  const targetModel = process.env.AI_MODEL || 'google/gemini-2.0-flash-exp:free';
   const refererUrl = process.env.APP_URL || '';
 
   try {
